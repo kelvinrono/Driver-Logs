@@ -13,7 +13,8 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch('http://localhost:8000/api/trips/calculate_route/', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/trips/calculate_route/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
