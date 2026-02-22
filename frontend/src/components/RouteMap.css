@@ -1,0 +1,100 @@
+.route-map {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.map-container {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+  background: #f0f0f0;
+}
+
+.no-map {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #ddd;
+  color: #666;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-map p {
+  margin: 0;
+  font-size: 1em;
+}
+
+.stops-list {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.stops-list h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.stops-list ul {
+  list-style: none;
+}
+
+.stop-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.stop-item.fuel {
+  border-left-color: #ffa500;
+}
+
+.stop-item.rest {
+  border-left-color: #4caf50;
+}
+
+.stop-icon {
+  font-size: 1.5em;
+}
+
+.stop-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stop-info strong {
+  color: #333;
+  font-size: 0.95em;
+}
+
+.stop-info span {
+  color: #666;
+  font-size: 0.85em;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    min-height: 300px;
+  }
+
+  .stops-list {
+    padding: 15px;
+  }
+
+  .stop-item {
+    gap: 10px;
+    padding: 10px;
+  }
+}

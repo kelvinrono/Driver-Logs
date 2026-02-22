@@ -1,0 +1,160 @@
+.log-display {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.no-logs {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  font-size: 1.1em;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.log-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tabs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.tabs-header h3 {
+  color: #333;
+  margin: 0;
+  font-size: 1.1em;
+  white-space: nowrap;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex: 1;
+}
+
+.tab-btn {
+  padding: 10px 16px;
+  background: #f0f0f0;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.tab-btn:hover {
+  background: #e8e8e8;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.log-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.log-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.stat-grid {
+  display: contents;
+}
+
+.stat-box {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-box label {
+  color: #666;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.stat-box .value {
+  color: #333;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.stat-box.off-duty {
+  border-left-color: #999;
+}
+
+.stat-box.sleeper {
+  border-left-color: #4caf50;
+}
+
+.stat-box.driving {
+  border-left-color: #ff6b6b;
+}
+
+.stat-box.on-duty {
+  border-left-color: #ffa500;
+}
+
+.log-details {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.log-details h3 {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 1em;
+}
+
+.log-details p {
+  margin-bottom: 8px;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.log-details strong {
+  color: #333;
+}
+
+@media (max-width: 1024px) {
+  .log-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .log-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tab-buttons {
+    width: 100%;
+  }
+}
