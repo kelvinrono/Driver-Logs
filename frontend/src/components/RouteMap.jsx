@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import './RouteMap.css'
 
-function RouteMap({ trip }) {
+function RouteMap({ trip, loading }) {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
 
@@ -37,6 +37,34 @@ function RouteMap({ trip }) {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(map)
+
+      // Add geocoder search control
+      if (window.L.Control && window.L.Control.Geocoder) {
+        window.L.Control.geocoder({
+          defaultMarkGeocode: false,
+          placeholder: 'Search for a location...',
+          errorMessage: 'Location not found',
+          collapsed: false,
+          position: 'topright'
+        })
+          .on('markgeocode', function(e) {
+            const bbox = e.geocode.bbox
+            const poly = window.L.polygon([
+              bbox.getSouthEast(),
+              bbox.getNorthEast(),
+              bbox.getNorthWest(),
+              bbox.getSouthWest()
+            ])
+            map.fitBounds(poly.getBounds())
+            
+            // Add a temporary marker for the searched location
+            window.L.marker(e.geocode.center)
+              .addTo(map)
+              .bindPopup(e.geocode.name)
+              .openPopup()
+          })
+          .addTo(map)
+      }
 
       // Add markers for waypoints
       waypoints.forEach((wp, idx) => {
@@ -81,7 +109,11 @@ function RouteMap({ trip }) {
 
   return (
     <div className="route-map">
-      {trip?.route?.waypoints && trip.route.waypoints.length > 0 ? (
+      {loading ? (
+        <div className="no-map loading-map">
+          <p>Loading...</p>
+        </div>
+      ) : trip?.route?.waypoints && trip.route.waypoints.length > 0 ? (
         <div 
           ref={mapRef}
           className="map-container"
@@ -89,7 +121,7 @@ function RouteMap({ trip }) {
         />
       ) : (
         <div className="no-map">
-          <p>No route information available. The map will appear here once the route is calculated.</p>
+          <p>Search to see the map</p>
         </div>
       )}
       

@@ -1,50 +1,152 @@
+.eld-log-sheet-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .eld-log-sheet {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border: 1px solid #e0e0e0;
-  padding: 20px;
+  border: 2px solid #000;
+  padding: 24px;
   border-radius: 8px;
-  background: #fafafa;
+  background: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
 }
 
 .sheet-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   gap: 20px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 3px solid #000;
   padding-bottom: 15px;
 }
 
-.sheet-header h3 {
-  color: #333;
-  margin: 0;
-  font-size: 1.2em;
+.header-title {
+  flex: 1;
 }
 
-.sheet-header p {
-  color: #666;
-  margin: 0;
+.header-title h3 {
+  color: #000;
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.date-fields {
+  display: flex;
+  gap: 20px;
   font-size: 0.95em;
 }
 
+.date-fields span {
+  color: #000;
+  font-weight: 700;
+}
+
 .export-btn {
-  padding: 10px 16px;
-  background: #667eea;
+  padding: 12px 20px;
+  background: #000;
   color: white;
-  border: none;
-  border-radius: 6px;
+  border: 2px solid #000;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s;
+  font-weight: 700;
+  transition: all 0.3s ease;
   white-space: nowrap;
 }
 
 .export-btn:hover {
-  background: #764ba2;
+  background: #333;
+  border-color: #333;
 }
 
+.export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Export Section (Bottom) */
+.export-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.export-section .export-btn {
+  padding: 16px 40px;
+  font-size: 1.1em;
+  min-width: 300px;
+}
+
+.export-note {
+  color: #000;
+  font-size: 0.9em;
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Driver Info Section */
+.driver-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #000;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.info-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-field label {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-field input {
+  padding: 8px 10px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  font-size: 0.95em;
+  color: #000;
+  font-weight: 700;
+  background: white;
+  font-family: inherit;
+}
+
+.info-field input:focus {
+  outline: none;
+  border-color: #000;
+  background: white;
+}
+
+/* Canvas Section */
 .sheet-content {
   display: flex;
   flex-direction: column;
@@ -52,13 +154,18 @@
 }
 
 .instruction {
-  color: #999;
+  color: #000;
   font-size: 0.9em;
   margin: 0;
+  padding: 8px 12px;
+  background: white;
+  border: 2px solid #000;
+  border-radius: 6px;
+  font-weight: 700;
 }
 
 .log-canvas {
-  border: 1px solid #ddd;
+  border: 2px solid #000;
   background: white;
   cursor: crosshair;
   border-radius: 4px;
@@ -67,13 +174,15 @@
   display: block;
 }
 
+/* Legend */
 .sheet-legend {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
-  padding: 15px;
+  padding: 16px;
   background: white;
-  border-radius: 6px;
+  border-radius: 8px;
+  border: 2px solid #000;
 }
 
 .legend-item {
@@ -83,52 +192,217 @@
 }
 
 .legend-color {
-  width: 20px;
+  width: 30px;
   height: 20px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
+  border-radius: 4px;
+  border: 2px solid #000;
+  flex-shrink: 0;
 }
 
 .legend-item span {
-  color: #666;
+  color: #000;
   font-size: 0.9em;
+  font-weight: 700;
+  font-weight: 600;
 }
 
-.sheet-remarks {
+/* Remarks Section */
+.remarks-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
   background: white;
-  padding: 15px;
-  border-radius: 6px;
-  border-left: 4px solid #667eea;
+  border-radius: 8px;
+  border: 2px solid #000;
 }
 
-.sheet-remarks h4 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 0.95em;
-}
-
-.sheet-remarks p {
+.remarks-section h4 {
   margin: 0;
-  color: #666;
-  font-size: 0.9em;
-  line-height: 1.5;
+  color: #000;
+  font-size: 1em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+.remarks-instruction {
+  margin: 0;
+  color: #000;
+  font-size: 0.85em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.remarks-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: inherit;
+  color: #000;
+  font-weight: 700;
+  background: white;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.remarks-textarea:focus {
+  outline: none;
+  border-color: #000;
+  background: white;
+}
+
+/* Shipping Section */
+.shipping-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #000;
+}
+
+.shipping-section h4 {
+  margin: 0;
+  color: #000;
+  font-size: 1em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.shipping-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* Totals Section */
+.totals-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #000;
+}
+
+.totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.total-item {
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  border: 2px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-item label {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.total-item strong {
+  font-size: 1.2em;
+  color: #000;
+  font-weight: 800;
+}
+
+.daily-totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 2px solid #000;
+}
+
+.total-highlight {
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-highlight label {
+  font-size: 0.95em;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-highlight strong {
+  font-size: 1.8em;
+  color: #000;
+  font-weight: 800;
+}
+
+/* Signature Section */
+.signature-section {
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #000;
+}
+
+.signature-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signature-field label {
+  font-size: 0.9em;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.signature-line {
+  height: 50px;
+  border-bottom: 2px solid #000;
+  background: white;
+  border-radius: 4px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .sheet-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .export-btn {
-    align-self: flex-start;
-  }
-
-  .sheet-legend {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .eld-log-sheet {
-    padding: 15px;
+    padding: 16px;
+  }
+
+  .header-title h3 {
+    font-size: 1.2em;
+  }
+
+  .date-fields {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .info-row,
+  .shipping-fields,
+  .totals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .log-canvas {
+    max-width: 100%;
+    overflow-x: auto;
   }
 }

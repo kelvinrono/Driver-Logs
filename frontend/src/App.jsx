@@ -49,11 +49,11 @@ function App() {
           {error && <div className="error-message">{error}</div>}
         </div>
         
-        {tripData && (
-          <div className="results-section">
-            <div className="map-section">
-              <h2>Route Information</h2>
-              <RouteMap trip={tripData} />
+        <div className="results-section">
+          <div className="map-section">
+            <h2>Route Information</h2>
+            <RouteMap trip={tripData} loading={loading} />
+            {tripData && (
               <div className="trip-stats">
                 <div className="stat">
                   <span>Total Distance:</span>
@@ -64,14 +64,16 @@ function App() {
                   <strong>{tripData.estimated_duration.toFixed(1)} hours</strong>
                 </div>
               </div>
-            </div>
-            
+            )}
+          </div>
+          
+          {tripData && (
             <div className="logs-section">
               <h2>Daily ELD Logs</h2>
               <LogDisplay logs={tripData.daily_logs} />
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   )
