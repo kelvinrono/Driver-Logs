@@ -13,8 +13,7 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/trips/calculate_route/`, {
+      const response = await fetch('https://driver-logs.onrender.com/api/trips/calculate_route/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
