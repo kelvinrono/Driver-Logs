@@ -9,31 +9,30 @@ function ELDLogSheet({ log, date, dayNumber, totalDays }) {
   const [remarks, setRemarks] = useState([])
   const [isExporting, setIsExporting] = useState(false)
 
-  // Initialize entries from log data
+  // Initialize entries from log data (using 15-minute intervals)
   useEffect(() => {
     const initialEntries = []
     
-    // Create 24-hour entries based on duty hours
-    let hoursRemaining = {
-      OFF: log.off_duty_hours,
-      SLEEPER: log.sleeper_berth_hours,
-      DRIVING: log.driving_hours,
-      ON_DUTY: log.on_duty_hours
+    // Convert hours to 15-minute intervals (total 96 intervals in 24 hours)
+    let intervalsRemaining = {
+      OFF: Math.round(log.off_duty_hours * 4),
+      SLEEPER: Math.round(log.sleeper_berth_hours * 4),
+      DRIVING: Math.round(log.driving_hours * 4),
+      ON_DUTY: Math.round(log.on_duty_hours * 4)
     }
 
-    // Simple distribution: driving hours first, then on_duty, then sleeper, then off
+    // Fill intervals: driving first, then on_duty, then sleeper, then off
     const dutyOrder = ['DRIVING', 'ON_DUTY', 'SLEEPER', 'OFF']
-    let currentHour = 0
+    let currentInterval = 0
 
     for (let dutyType of dutyOrder) {
-      while (hoursRemaining[dutyType] > 0 && currentHour < 24) {
+      while (intervalsRemaining[dutyType] > 0 && currentInterval < 96) {
         initialEntries.push({
-          hour: currentHour,
-          minute: 0,
+          interval: currentInterval,
           duty_status: dutyType
         })
-        hoursRemaining[dutyType] -= 1
-        currentHour += 1
+        intervalsRemaining[dutyType] -= 1
+        currentInterval += 1
       }
     }
 
@@ -54,88 +53,83 @@ function ELDLogSheet({ log, date, dayNumber, totalDays }) {
     ctx.fillRect(0, 0, width, height)
 
     // Configuration
-    const leftMargin = 10
-    const hourWidth = (width - leftMargin) / 24
-    const rowHeight = (height - 30) / 4 // 4 duty status rows
+    const leftMargin = 50
+    const topMargin = 25
+    const cellWidth = (width - leftMargin) / 96 // 96 intervals (15-min each)
+    const rowHeight = (height - topMargin - 5) / 4 // 4 duty status rows
 
-    // Draw time header (midnight to midnight)
+    // Draw time header (hour markers at 0, 4, 8, 12, 16, 20, 24)
     ctx.fillStyle = '#000'
-    ctx.font = 'bold 11px Arial'
+    ctx.font = 'bold 10px Arial'
     ctx.textAlign = 'center'
     
-    // Draw hour markers
     for (let h = 0; h <= 24; h++) {
-      const x = leftMargin + h * hourWidth
-      const displayHour = h === 24 ? 'Midnight' : h.toString()
-      ctx.fillText(displayHour, x, 15)
+      const x = leftMargin + (h * 4 * cellWidth)
+      const displayHour = h === 24 ? '24' : h.toString().padStart(2, '0')
+      ctx.fillText(displayHour, x, 20)
       
-      // Draw vertical lines for hours
+      // Draw main hour lines
       ctx.strokeStyle = '#000'
-      ctx.lineWidth = h % 12 === 0 ? 2 : 1
+      ctx.lineWidth = 2
       ctx.beginPath()
-      ctx.moveTo(x, 20)
-      ctx.lineTo(x, 20 + rowHeight * 4)
+      ctx.moveTo(x, topMargin)
+      ctx.lineTo(x, topMargin + rowHeight * 4)
       ctx.stroke()
-      
-      // Draw 15-minute increment lines
-      if (h < 24) {
-        for (let q = 1; q < 4; q++) {
-          const qx = x + (hourWidth / 4) * q
-          ctx.strokeStyle = '#ccc'
-          ctx.lineWidth = 0.5
-          ctx.beginPath()
-          ctx.moveTo(qx, 20)
-          ctx.lineTo(qx, 20 + rowHeight * 4)
-          ctx.stroke()
-        }
-      }
     }
 
-    // Draw duty status rows
-    const dutyStatuses = ['1. Off Duty', '2. Sleeper', '3. Driving', '4. On Duty']
+    // Draw duty status rows and individual cells
+    const dutyStatuses = ['1. Off Duty', '2. Sleeper Berth', '3. Driving', '4. On Duty (Not Driving)']
     const dutyKeys = ['OFF', 'SLEEPER', 'DRIVING', 'ON_DUTY']
     const colors = {
-      OFF: '#999',
+      OFF: '#999999',
       SLEEPER: '#4caf50',
       DRIVING: '#ff6b6b',
       ON_DUTY: '#ffa500'
     }
 
     for (let row = 0; row < dutyStatuses.length; row++) {
-      const y = 20 + row * rowHeight
+      const y = topMargin + row * rowHeight
       
-      // Draw horizontal line
+      // Draw row label
+      ctx.fillStyle = '#000'
+      ctx.font = 'bold 9px Arial'
+      ctx.textAlign = 'right'
+      ctx.fillText(dutyStatuses[row], leftMargin - 5, y + rowHeight / 2 + 3)
+      
+      // Draw cells for this row
+      for (let interval = 0; interval < 96; interval++) {
+        const x = leftMargin + interval * cellWidth
+        
+        // Check if this interval has an entry for this duty status
+        const hasEntry = entries.find(
+          e => e.interval === interval && e.duty_status === dutyKeys[row]
+        )
+        
+        // Draw cell background
+        if (hasEntry) {
+          ctx.fillStyle = colors[dutyKeys[row]]
+          ctx.fillRect(x, y, cellWidth, rowHeight)
+        }
+        
+        // Draw cell border (light grid)
+        ctx.strokeStyle = '#ddd'
+        ctx.lineWidth = 0.5
+        ctx.strokeRect(x, y, cellWidth, rowHeight)
+      }
+      
+      // Draw row bottom border
       ctx.strokeStyle = '#000'
       ctx.lineWidth = 1
       ctx.beginPath()
-      ctx.moveTo(leftMargin, y)
-      ctx.lineTo(width, y)
+      ctx.moveTo(leftMargin, y + rowHeight)
+      ctx.lineTo(width, y + rowHeight)
       ctx.stroke()
-      
-      // Draw row label on left side of canvas
-      ctx.fillStyle = '#000'
-      ctx.font = 'bold 10px Arial'
-      ctx.textAlign = 'left'
-      ctx.fillText(dutyStatuses[row], 2, y + 12)
-      
-      // Fill in duty status for each hour
-      for (let h = 0; h < 24; h++) {
-        const matchingEntry = entries.find(
-          e => e.hour === h && e.duty_status === dutyKeys[row]
-        )
-        
-        if (matchingEntry) {
-          ctx.fillStyle = colors[dutyKeys[row]]
-          const x = leftMargin + h * hourWidth
-          ctx.fillRect(x + 1, y + 1, hourWidth - 2, rowHeight - 2)
-        }
-      }
     }
 
-    // Draw bottom border
+    // Draw outer border
     ctx.strokeStyle = '#000'
     ctx.lineWidth = 2
-    ctx.strokeRect(leftMargin, 20, width - leftMargin, rowHeight * 4)
+    ctx.strokeRect(leftMargin, topMargin, width - leftMargin - 5, rowHeight * 4)
 
   }, [entries])
 
@@ -144,36 +138,43 @@ function ELDLogSheet({ log, date, dayNumber, totalDays }) {
 
     const canvas = canvasRef.current
     const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    
+    // Account for canvas scaling - convert display coordinates to canvas coordinates
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    const x = (e.clientX - rect.left) * scaleX
+    const y = (e.clientY - rect.top) * scaleY
 
     const width = canvas.width
     const height = canvas.height
-    const leftMargin = 10
-    const hourWidth = (width - leftMargin) / 24
-    const rowHeight = (height - 30) / 4
+    const leftMargin = 50
+    const topMargin = 25
+    const cellWidth = (width - leftMargin) / 96
+    const rowHeight = (height - topMargin - 5) / 4
 
-    const hour = Math.floor((x - leftMargin) / hourWidth)
-    const row = Math.floor((y - 20) / rowHeight)
+    // Calculate which cell was clicked
+    const interval = Math.floor((x - leftMargin) / cellWidth)
+    const row = Math.floor((y - topMargin) / rowHeight)
 
-    if (hour >= 0 && hour < 24 && row >= 0 && row < 4) {
+    // Check if click is within valid grid area
+    if (interval >= 0 && interval < 96 && row >= 0 && row < 4) {
       const dutyKeys = ['OFF', 'SLEEPER', 'DRIVING', 'ON_DUTY']
       const dutyStatus = dutyKeys[row]
 
-      // Toggle or set the hour
+      // Find if this interval already has an entry for this duty status
       const existingIdx = entries.findIndex(
-        e => e.hour === hour && e.duty_status === dutyStatus
+        e => e.interval === interval && e.duty_status === dutyStatus
       )
       
       if (existingIdx >= 0) {
-        // Remove if already set
+        // Remove if already marked
         setEntries(entries.filter((_, idx) => idx !== existingIdx))
       } else {
-        // Remove any existing entry for this hour
-        const newEntries = entries.filter(e => e.hour !== hour)
+        // Remove any existing entry for this interval (any duty status)
+        const newEntries = entries.filter(e => e.interval !== interval)
+        // Add new entry for this interval and duty status
         newEntries.push({
-          hour: hour,
-          minute: 0,
+          interval: interval,
           duty_status: dutyStatus
         })
         setEntries(newEntries)
@@ -287,7 +288,7 @@ function ELDLogSheet({ log, date, dayNumber, totalDays }) {
 
       <div className="sheet-content">
         <p className="instruction">
-          Click on the grid to mark duty status changes (each vertical line = 15 min)
+          Click on cells to mark each 15-minute period with the corresponding duty status. Click again to remove.
         </p>
         <canvas
           ref={canvasRef}
