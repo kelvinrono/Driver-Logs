@@ -106,6 +106,10 @@ media/
 *.pyc
 *.db
 *.pid
-# Markdown files (except README)
-*.md
-!README.md
+# Environment files (don't commit sensitive data)
+.env
+.env.local
+.env.*.local
+# Development documentation (keep deployment guides)
+!DEPLOYMENT_GUIDE.md
+!PRE_DEPLOYMENT_CHECKLIST.md
